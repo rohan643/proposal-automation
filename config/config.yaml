@@ -1,0 +1,24 @@
+google_docs:
+  template_id: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms"
+  output_folder_id: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2"
+
+docusign:
+  template_id: "abc123-def456-ghi789"
+  signer_role: "Client"
+
+email:
+  from_name: "Rohan Mukherjee"
+  from_address: "texanrohan@gmail.com"
+  subject_template: "Your proposal — {company_name}"
+  follow_up_days: [1, 3, 7]
+
+crm:
+  platform: "airtable"
+  base_id: "appXXXXXXXXXXXXXX"
+  table: "Deals"
+  stage_field: "Stage"
+  proposal_sent_value: "Proposal Sent"
+
+openai:
+  model: "gpt-4o"
+  temperature: 0.2
