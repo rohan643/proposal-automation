@@ -1,0 +1,145 @@
+{
+  "name": "Proposal Automation \u2014 Main",
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Fireflies Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        200,
+        300
+      ],
+      "parameters": {
+        "path": "fireflies-transcript",
+        "httpMethod": "POST"
+      }
+    },
+    {
+      "id": "2",
+      "name": "Extract with GPT-4o",
+      "type": "n8n-nodes-base.openAi",
+      "position": [
+        400,
+        300
+      ],
+      "parameters": {
+        "model": "gpt-4o",
+        "operation": "message",
+        "prompt": "Extract client, scope, pricing, timeline from transcript. Return JSON."
+      }
+    },
+    {
+      "id": "3",
+      "name": "Fill Google Doc Template",
+      "type": "n8n-nodes-base.googleDocs",
+      "position": [
+        600,
+        300
+      ],
+      "parameters": {
+        "operation": "create",
+        "folderId": "={{$env.GDOC_FOLDER_ID}}"
+      }
+    },
+    {
+      "id": "4",
+      "name": "Send DocuSign",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        800,
+        300
+      ],
+      "parameters": {
+        "url": "https://demo.docusign.net/restapi/v2.1/accounts/{{accountId}}/envelopes",
+        "method": "POST"
+      }
+    },
+    {
+      "id": "5",
+      "name": "Send via Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        1000,
+        300
+      ],
+      "parameters": {
+        "operation": "send",
+        "subject": "={{$json.subject}}"
+      }
+    },
+    {
+      "id": "6",
+      "name": "Update CRM",
+      "type": "n8n-nodes-base.airtable",
+      "position": [
+        1200,
+        300
+      ],
+      "parameters": {
+        "operation": "update",
+        "table": "Deals"
+      }
+    }
+  ],
+  "connections": {
+    "Fireflies Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract with GPT-4o",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract with GPT-4o": {
+      "main": [
+        [
+          {
+            "node": "Fill Google Doc Template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fill Google Doc Template": {
+      "main": [
+        [
+          {
+            "node": "Send DocuSign",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send DocuSign": {
+      "main": [
+        [
+          {
+            "node": "Send via Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send via Gmail": {
+      "main": [
+        [
+          {
+            "node": "Update CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b2c3d4e5-f6a7-8901-bcde-f23456789012"
+}
